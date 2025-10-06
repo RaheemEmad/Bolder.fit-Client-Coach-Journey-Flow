@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bolder.fit — AI-Powered Fitness Journey</title>
+  <meta name="description" content="Bolder.fit — AI powered fitness coaching platform for coaches and clients. Smart plan upgrades, payments, and AI-assisted programming." />
+  <!-- Performance: preconnect fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#0a0a0a;
+      --bg-2:#1a0a2e;
+      --muted:#a78bfa;
+      --accent-1:#ff006e;
+      --accent-2:#8338ec;
+      --accent-3:#3a86ff;
+      --glass: rgba(255,255,255,0.03);
+      --glass-strong: rgba(255,255,255,0.06);
+      --card-radius:20px;
+      --max-width:1200px;
+      --container-padding:28px;
+      --transition:300ms cubic-bezier(.2,.9,.3,1);
+      --text: #ffffff;
+      color-scheme: dark;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Reset + sensible defaults */
+    *{box-sizing:border-box}
+    html,body,#app{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(135deg,var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-1) 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      overflow-y:auto;
+      font-size:16px;
+    }
+
+    /* Container */
+    .container{
+      max-width:var(--max-width);
+      margin:0 auto;
+      padding:48px var(--container-padding);
+      position:relative;
+      z-index:1;
+    }
+
+    header.site-header{
+      text-align:center;
+      margin-bottom:36px;
+    }
+
+    .logo{
+      display:inline-block;
+      padding:10px 28px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:1.25rem;
+      background:linear-gradient(135deg,var(--accent-1),var(--accent-2),var(--accent-3));
+      box-shadow:0 10px 30px rgba(131,56,236,0.18);
+      color: #fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .site-title{
+      font-size:2.25rem;
+      font-weight:900;
+      margin:14px 0 6px;
+      background:linear-gradient(135deg,#fff,#a78bfa);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .site-subtitle{ color:var(--muted); font-weight:500; font-size:1rem }
+
+    .ai-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:12px;
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid rgba(131,56,236,0.18);
+      background:rgba(131,56,236,0.06);
+      font-weight:600;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    /* Nav tabs */
+    .tabs{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      margin:28px 0 40px;
+      flex-wrap:wrap;
+    }
+    .tab-btn{
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:10px 20px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      transition:all var(--transition);
+      color:var(--text);
+      font-size:.95rem;
+    }
+    .tab-btn:hover{ transform:translateY(-3px) }
+    .tab-btn[aria-selected="true"]{
+      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      box-shadow:0 12px 40px rgba(255,0,110,0.12);
+      border-color:transparent;
+      color:#fff;
+    }
+    .tab-btn:focus{ outline:3px solid rgba(131,56,236,0.18); outline-offset:3px; }
+
+    /* Flow / Cards */
+    .flow-section{ display:block; }
+    .step-card{
+      background:var(--glass);
+      border-radius:var(--card-radius);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:28px;
+      margin-bottom:22px;
+      transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position:relative;
+      overflow:hidden;
+    }
+    .step-card:hover{
+      transform:translateY(-6px);
+      border-color:rgba(255,0,110,0.18);
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    }
+    .step-header{ display:flex; gap:18px; align-items:center; }
+    .step-icon{
+      width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+      background:linear-gradient(135deg,var(--accent-3),#06ffa5);
+      color:#fff;
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    }
+    .step-content h3{ font-size:1.15rem; margin-bottom:6px; font-weight:700 }
+    .step-content p{ color:var(--muted); margin:0 }
+
+    .scenarios{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:18px; }
+    .scenario-card{
+      padding:14px;border-radius:12px;background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.03)
+    }
+    .scenario-card.red{ border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.04) }
+    .scenario-card.green{ border-color: rgba(34,197,94,0.25); background: rgba(34,197,94,0.03) }
+    .scenario-card h4{ margin:0 0 8px; font-size:1rem; display:flex; gap:8px; align-items:center }
+    .scenario-card p{ margin:0; color:var(--muted); font-size:.95rem }
+
+    .pricing-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-top:16px }
+    .price-card{
+      padding:16px;border-radius:12px;text-align:center;background:rgba(0,0,0,0.45); border:1px solid rgba(131,56,236,0.12); transition:transform var(--transition);
+    }
+    .price-card:hover{ transform:scale(1.03) }
+    .price-card.featured{ border-color:var(--accent-1); background:linear-gradient(135deg, rgba(255,190,11,0.06), rgba(255,0,110,0.04)) }
+    .price-card h4{ margin:0 0 8px; font-size:1rem }
+    .price-card .clients{ color:var(--muted); font-size:.9rem; margin-bottom:8px }
+    .price-card .price{ font-weight:800; font-size:1.15rem; background:linear-gradient(135deg,var(--accent-1),var(--accent-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+
+    .program-options{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:14px }
+    .program-option{
+      padding:14px;border-radius:12px;border:1px solid rgba(58,134,255,0.12); background:rgba(58,134,255,0.04); text-align:center; cursor:pointer;
+      transition:transform var(--transition);
+    }
+    .program-option:hover{ transform:translateY(-6px) }
+
+    .info-box{ margin-top:12px;padding:12px;border-left:4px solid var(--accent-1); border-radius:8px; background:rgba(0,0,0,0.45) }
+    .info-box strong{ color:var(--accent-1) }
+
+    .journey-steps{ padding:18px; border-radius:16px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06) }
+    .journey-step{ display:flex; gap:16px; align-items:flex-start; margin-bottom:18px }
+    .step-number{ width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800 }
+    .step-number.default{ background:linear-gradient(135deg,var(--accent-1),var(--accent-2)); color:#fff }
+    .step-number.green{ background:linear-gradient(135deg,#06ffa5,#3a86ff); color:#002 }
+    .step-text h3{ margin:0 0 6px; font-size:1.05rem }
+    .step-text p{ margin:0; color:var(--muted) }
+
+    .features-footer{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-top:36px }
+    .feature-card{ padding:18px; border-radius:16px; background:var(--glass); border:1px solid rgba(255,255,255,0.04) }
+
+    /* Arrow separator */
+    .arrow-sep{ text-align:center; font-size:28px; color:var(--accent-2); margin:16px 0; user-select:none; }
+
+    /* background animated blobs — accessible + low-impact */
+    .bg-animated{
+      position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.28;
+      display:block;
+    }
+    .bg-animated .blob{
+      position:absolute; width:520px; height:520px; border-radius:50%; filter:blur(96px); mix-blend-mode:screen;
+      will-change:transform; animation:blobMove 22s linear infinite;
+    }
+    .bg-animated .blob.a{ left:-120px; top:-80px; background:linear-gradient(45deg,var(--accent-1),var(--accent-2)); animation-delay:0s }
+    .bg-animated .blob.b{ right:-120px; bottom:-80px; background:linear-gradient(45deg,var(--accent-3),#06ffa5); animation-delay:10s }
+    @keyframes blobMove{ 0%{transform:translate(0,0) scale(1)} 33%{transform:translate(100px,-80px) scale(1.06)} 66%{transform:translate(-90px,120px) scale(.94)} 100%{transform:translate(0,0) scale(1)} }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion:reduce){
+      .bg-animated .blob, .step-card, .tab-btn, .program-option{ animation:none; transition:none }
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .container{ padding:28px 18px }
+      .site-title{ font-size:1.6rem }
+      .logo{ font-size:1rem }
+    }
+    @media (max-width:540px){
+      .site-title{ font-size:1.3rem }
+      .ai-badge{ font-size:.9rem }
+      .step-header{ gap:12px }
+      .step-icon{ width:48px;height:48px }
+    }
+
+    /* Focus-visible polyfill */
+    :focus{ outline:none }
+    :focus-visible{ outline:3px solid rgba(131,56,236,0.18); outline-offset:3px; border-radius:8px }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="bg-animated" aria-hidden="true">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+    </div>
+
+    <div class="container">
+      <header class="site-header" role="banner">
+        <div class="logo" aria-hidden="true">bolder.fit</div>
+        <h1 class="site-title">AI-Powered Fitness Journey</h1>
+        <p class="site-subtitle">Transform your coaching business with intelligence — smarter client flows, payments, and plans.</p>
+        <div class="ai-badge" aria-hidden="true">⚡ AI-Empowered Platform</div>
+      </header>
+
+      <!-- Accessible tabs -->
+      <nav class="tabs" role="tablist" aria-label="Flow sections">
+        <button class="tab-btn" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true">Complete Flow</button>
+        <button class="tab-btn" role="tab" id="tab-client" aria-controls="panel-client" aria-selected="false">Client Journey</button>
+        <button class="tab-btn" role="tab" id="tab-coach" aria-controls="panel-coach" aria-selected="false">Coach Journey</button>
+      </nav>
+
+      <!-- Panels: they degrade gracefully if JS is disabled -->
+      <main>
+        <section id="panel-overview" class="flow-section" role="region" aria-labelledby="tab-overview">
+          <article class="step-card" aria-labelledby="s1-title">
+            <div class="step-header">
+              <div class="step-icon" aria-hidden="true">👥</div>
+              <div class="step-content">
+                <h3 id="s1-title">Step 1 — Client Requests to Join</h3>
+                <p>Client discovers coach and sends a request to join their training group.</p>
+              </div>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s2-title">
+            <div class="step-header">
+              <div class="step-icon" style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2))" aria-hidden="true">⚠️</div>
+              <div class="step-content">
+                <h3 id="s2-title">Step 2 — AI-Powered Plan Check</h3>
+                <p>System intelligently analyzes coach's current plan capacity and suggests next steps.</p>
+              </div>
+            </div>
+
+            <div class="scenarios" aria-hidden="false">
+              <div class="scenario-card red" role="group" aria-label="Over limit">
+                <h4>🚫 Scenario A — Over Limit</h4>
+                <p>Coach has exceeded their free client slots.</p>
+                <div style="margin-top:8px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.45)">
+                  <p style="margin:0;font-weight:700;color:#f87171">Action Required</p>
+                  <p style="margin:6px 0 0;color:#fca5a5;font-size:.92rem">Upgrade plan to accept new clients and scale your business.</p>
+                </div>
+              </div>
+
+              <div class="scenario-card green" role="group" aria-label="Space available">
+                <h4>✅ Scenario B — Space Available</h4>
+                <p>Coach has available slots in current plan.</p>
+                <div style="margin-top:8px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.45)">
+                  <p style="margin:0;font-weight:700;color:#4ade80">Ready to Go</p>
+                  <p style="margin:6px 0 0;color:#86efac;font-size:.92rem">Accept client immediately and start training.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s3-title" style="background:linear-gradient(135deg, rgba(131,56,236,0.06), rgba(255,0,110,0.04));">
+            <div class="step-header">
+              <div class="step-icon" style="background:linear-gradient(135deg,var(--accent-2),var(--accent-1))" aria-hidden="true">👑</div>
+              <div class="step-content">
+                <h3 id="s3-title">Step 3 — Smart Plan Upgrade</h3>
+                <p>AI recommends the optimal plan based on client growth trajectory and revenue impact.</p>
+              </div>
+            </div>
+
+            <div class="pricing-grid" aria-hidden="false" role="list">
+              <div class="price-card" role="listitem">
+                <h4>Free</h4>
+                <div class="clients">2 clients</div>
+                <div class="price">0 EGP</div>
+              </div>
+              <div class="price-card" role="listitem">
+                <h4>Starter</h4>
+                <div class="clients">5 clients</div>
+                <div class="price">350 EGP</div>
+              </div>
+              <div class="price-card" role="listitem">
+                <h4>Growth</h4>
+                <div class="clients">15 clients</div>
+                <div class="price">900 EGP</div>
+              </div>
+              <div class="price-card featured" role="listitem">
+                <h4>Pro</h4>
+                <div class="clients">20 clients</div>
+                <div class="price">1100 EGP</div>
+              </div>
+              <div class="price-card" role="listitem">
+                <h4>Elite</h4>
+                <div class="clients">60 clients</div>
+                <div class="price">1800 EGP</div>
+              </div>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s4-title">
+            <div class="step-header">
+              <div class="step-icon" aria-hidden="true">✅</div>
+              <div class="step-content">
+                <h3 id="s4-title">Step 4 — Coach Accepts Client</h3>
+                <p>Instant notification sent to client — connection established and onboarding begins.</p>
+              </div>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s5-title">
+            <div class="step-header">
+              <div class="step-icon" aria-hidden="true">⚡</div>
+              <div class="step-content">
+                <h3 id="s5-title">Step 5 — Client Selects AI-Powered Program</h3>
+                <p>Choose from personalized, AI-optimized training and nutrition programs.</p>
+              </div>
+            </div>
+
+            <div class="program-options" role="list">
+              <div class="program-option" role="listitem" tabindex="0" aria-label="Workout Program"> <div style="font-size:26px">💪</div><strong>Workout Program</strong></div>
+              <div class="program-option" role="listitem" tabindex="0" aria-label="Nutrition Plan"> <div style="font-size:26px">🥗</div><strong>Nutrition Plan</strong></div>
+              <div class="program-option" role="listitem" tabindex="0" aria-label="Combined Package"> <div style="font-size:26px">🚀</div><strong>Combined Package</strong></div>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s6-title">
+            <div class="step-header">
+              <div class="step-icon" aria-hidden="true">💳</div>
+              <div class="step-content">
+                <h3 id="s6-title">Step 6 — Seamless Payment Processing</h3>
+                <p>Secure, instant payment directly to the coach’s preferred channel — AI fraud detection included.</p>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <p><strong>Payment Flow:</strong> Money flows directly to your account — no delays, no hassle. AI fraud detection keeps transactions secure.</p>
+            </div>
+          </article>
+
+          <div class="arrow-sep" aria-hidden="true">↓</div>
+
+          <article class="step-card" aria-labelledby="s7-title" style="background:linear-gradient(135deg, rgba(6,255,165,0.04), rgba(58,134,255,0.03));">
+            <div class="step-header">
+              <div class="step-icon" aria-hidden="true">🎯</div>
+              <div class="step-content">
+                <h3 id="s7-title">Step 7 — AI-Assisted Program Assignment</h3>
+                <p>Create and assign personalized programs with AI recommendations—workouts and nutrition tailored per client.</p>
+              </div>
+            </div>
+
+            <div class="scenarios">
+              <div class="scenario-card green"><h4>💪 Custom Workouts</h4><p>AI suggests exercises based on goals and fitness level.</p></div>
+              <div class="scenario-card green"><h4>🥗 Nutrition Plans</h4><p>Smart meal planning with macro tracking and dietary preferences.</p></div>
+            </div>
+          </article>
+        </section>
+
+        <section id="panel-client" class="flow-section" role="region" aria-labelledby="tab-client" hidden>
+          <div class="journey-steps">
+            <h2 style="text-align:center;font-size:1.6rem;margin-bottom:18px">Client Journey</h2>
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">1</div>
+              <div class="step-text"><h3>Discover Your Perfect Coach</h3><p>Browse AI-matched coach profiles tailored to your goals.</p></div>
+            </div>
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">2</div>
+              <div class="step-text"><h3>Request to Join</h3><p>Send a one-click request to join your chosen coach's program.</p></div>
+            </div>
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">3</div>
+              <div class="step-text"><h3>Get Instant Approval</h3><p>Receive real-time notification when coach accepts you.</p></div>
+            </div>
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">4</div>
+              <div class="step-text">
+                <h3>Choose Your AI-Powered Program</h3>
+                <p>Select from personalized workout, nutrition, or combined packages.</p>
+                <div class="step-details" style="margin-top:8px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.45)">
+                  <p style="margin:0">✨ Real-time progress tracking • AI performance analytics • Direct coach communication</p>
+                </div>
+              </div>
+            </div>
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">5</div>
+              <div class="step-text"><h3>Secure Payment</h3><p>Complete secure payment directly to your coach's preferred channel.</p></div>
+            </div>
+            <div class="journey-step">
+              <div class="step-number green" aria-hidden="true">6</div>
+              <div class="step-text"><h3>Start Your Transformation!</h3><p>Access personalized plans, track progress, and achieve your goals.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-coach" class="flow-section" role="region" aria-labelledby="tab-coach" hidden>
+          <div class="journey-steps">
+            <h2 style="text-align:center;font-size:1.6rem;margin-bottom:18px">Coach Journey</h2>
+
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">1</div>
+              <div class="step-text"><h3>Receive Client Request</h3><p>Get instant notifications when clients want to join your program.</p></div>
+            </div>
+
+            <div class="journey-step">
+              <div class="step-number default" aria-hidden="true">2</div>
+              <div class="step-text">
+                <h3>AI Capacity Analysis</h3>
+                <p>System automatically checks if you have available client slots.</p>
+                <div style="margin-top:8px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.45)">
+                  <p style="margin:0"><strong>Free Plan:</strong> Up to 2 clients • <strong>Paid Plans:</strong> 5–60 clients depending on tier</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="journey-step">
+              <div class="step-number" style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));color:#fff" aria-hidden="true">3</div>
+              <div class="step-text"><h3>Upgrade if Needed</h3><p>Upgrade workflow with transactional checkout and revenue forecasting insights.</p></div>
+            </div>
+
+            <div class="journey-step">
+              <div class="step-number green" aria-hidden="true">4</div>
+              <div class="step-text"><h3>Manage Clients</h3><p>Manage client programs, scheduling, and metrics from a single dashboard.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="features-footer" aria-hidden="false">
+          <div class="feature-card">
+            <h3>AI Automation</h3>
+            <ul>
+              <li>Capacity checks, plan recommendations, and fraud detection.</li>
+              <li>Personalized workout & nutrition suggestions.</li>
+            </ul>
+          </div>
+          <div class="feature-card">
+            <h3>Payments & Security</h3>
+            <ul>
+              <li>Direct payouts to coaches — secure payment rails.</li>
+              <li>Dispute handling and AI fraud flags.</li>
+            </ul>
+          </div>
+          <div class="feature-card">
+            <h3>Scale & Insights</h3>
+            <ul>
+              <li>Plan-level revenue forecasting — know when to upsell.</li>
+              <li>Client retention analytics and engagement signals.</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <noscript>
+    <div style="position:fixed;left:0;right:0;bottom:0;background:#111;padding:10px;text-align:center;color:#fff;font-size:.95rem;">
+      JavaScript is disabled — tabs will appear stacked. Enable JavaScript for a better interactive experience.
+    </div>
+  </noscript>
+
+  <script defer>
+    (function(){
+      'use strict';
+      // Tab functionality — accessible: keyboard + aria
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls')));
+
+      function activateTab(tab){
+        tabs.forEach(t => {
+          const sel = (t === tab);
+          t.setAttribute('aria-selected', sel ? 'true' : 'false');
+        });
+        panels.forEach(p => {
+          const isTarget = p.id === tab.getAttribute('aria-controls');
+          p.hidden = !isTarget;
+        });
+        tab.focus();
+      }
+
+      // Click handlers
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          activateTab(tab);
+        });
+        tab.addEventListener('keydown', (e) => {
+          const idx = tabs.indexOf(tab);
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown'){
+            e.preventDefault(); activateTab(tabs[(idx + 1) % tabs.length]);
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp'){
+            e.preventDefault(); activateTab(tabs[(idx - 1 + tabs.length) % tabs.length]);
+          } else if (e.key === 'Home'){
+            e.preventDefault(); activateTab(tabs[0]);
+          } else if (e.key === 'End'){
+            e.preventDefault(); activateTab(tabs[tabs.length - 1]);
+          }
+        });
+      });
+
+      // Progressive enhancement: ensure only the first panel visible on load
+      document.addEventListener('DOMContentLoaded', () => {
+        const selected = tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
+        activateTab(selected);
+      });
+
+      // Optional: provide keyboard focusability for program-option cards
+      const options = document.querySelectorAll('.program-option');
+      options.forEach(opt => {
+        opt.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            // placeholder action — swap to real handler (checkout, modal) in prod
+            alert('Selected: ' + (opt.innerText || 'program'));
+          }
+        });
+      });
+
+      // Minimal accessibility fix for reduced-motion users — stop animations if user prefers reduced motion
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        document.querySelectorAll('.blob').forEach(b => b.style.animation = 'none');
+      }
+    })();
+  </script>
+</body>
+</html>
